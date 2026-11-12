@@ -1696,7 +1696,8 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
 </style>
 <script id="studymate-sheets-sync">
 (() => {
- const endpoint = 'https://script.google.com/macros/s/AKfycby0HW2tUXQBSxQ6Ol1HRYWirtHF_9300AYGOx9IrbSZtqBiV0yFZO2D2neDqhN6UUZz/exec';
+ const resultsEndpoint = 'https://script.google.com/macros/s/AKfycbwYb2VPpkJd60DIV-n6-U86IQReY2d66FkCEENwXAe5eouUAfzy8mohJzlEs4WE9kXzrg/exec';
+ const leaderboardEndpoint = 'https://script.google.com/macros/s/AKfycby0HW2tUXQBSxQ6Ol1HRYWirtHF_9300AYGOx9IrbSZtqBiV0yFZO2D2neDqhN6UUZz/exec';
  const queueKey = 'studymate-sheets-pending-v1';
  let queue = {};
  try { queue = JSON.parse(localStorage.getItem(queueKey) || '{}') || {}; } catch {}
@@ -1752,7 +1753,7 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
    status(id, 'Đang lưu kết quả…');
    const task = (async () => {
      try {
-       const response = await fetch(endpoint, {
+       const response = await fetch(resultsEndpoint, {
          method:'POST', body:JSON.stringify(payload),
          signal:AbortSignal.timeout(20000)
        });
@@ -1822,7 +1823,7 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
    const table = document.getElementById('studymate-rank-table');
    (async () => {
      try {
-       const url = new URL(endpoint);
+       const url = new URL(leaderboardEndpoint);
        url.searchParams.set('action','getLeaderboard');
        const response = await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(15000)});
        if (!response.ok) throw new Error();
