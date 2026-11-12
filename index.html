@@ -1696,8 +1696,7 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
 </style>
 <script id="studymate-sheets-sync">
 (() => {
- const resultsEndpoint = 'https://script.google.com/macros/s/AKfycbwYb2VPpkJd60DIV-n6-U86IQReY2d66FkCEENwXAe5eouUAfzy8mohJzlEs4WE9kXzrg/exec';
- const leaderboardEndpoint = 'https://script.google.com/macros/s/AKfycby0HW2tUXQBSxQ6Ol1HRYWirtHF_9300AYGOx9IrbSZtqBiV0yFZO2D2neDqhN6UUZz/exec';
+ const resultsEndpoint = 'https://script.google.com/macros/s/AKfycbxIU5CEqXd6wh35dm5s6VbI57DR9OXVbubD22_36mSKwg2_0nFf-LjPp1SntvdW3Js/exec';
  const queueKey = 'studymate-sheets-pending-v1';
  let queue = {};
  try { queue = JSON.parse(localStorage.getItem(queueKey) || '{}') || {}; } catch {}
@@ -1823,7 +1822,7 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
    const table = document.getElementById('studymate-rank-table');
    (async () => {
      try {
-       const url = new URL(leaderboardEndpoint);
+       const url = new URL(resultsEndpoint);
        url.searchParams.set('action','getLeaderboard');
        const response = await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(15000)});
        if (!response.ok) throw new Error();
@@ -1834,7 +1833,7 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
          return;
        }
        if (!data.rows.length) {
-         status.textContent = 'Chưa có kết quả hợp lệ trong KET_QUA. Hãy nộp một bài rồi bấm Làm mới.';
+         status.textContent = 'Chưa có kết quả hợp lệ trong tab ket qua. Hãy nộp một bài rồi bấm Làm mới.';
          return;
        }
        const body = table.tBodies[0];
