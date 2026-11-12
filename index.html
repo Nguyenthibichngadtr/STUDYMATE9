@@ -1803,6 +1803,56 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
      send(id);
    });
  };
+ const previousRankView = window.renderView;
+ window.renderView = function(view, ...args) {
+   if (view !== 'leaderboard') return previousRankView.call(this, view, ...args);
+   currentView = view;
+   document.getElementById('view-title').textContent = 'Bảng Vinh Danh';
+   const main = document.getElementById('main-content');
+   main.innerHTML = `<section class="m-4 md:m-8 p-5 md:p-8 rounded-3xl bg-white border border-indigo-100 shadow-sm">
+     <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="text-2xl font-black text-indigo-800">🏆 Bảng Vinh Danh · Top 10</h2>
+     <button type="button" id="studymate-rank-refresh" class="rounded-xl border border-indigo-200 px-4 py-2 font-bold text-indigo-700">Làm mới</button></div>
+     <p class="mt-2 text-sm text-slate-600">Mỗi hoạt động tính lần làm tốt nhất trên thang 10. Tổng điểm cao hơn xếp trước; bằng điểm ưu tiên thời gian ngắn hơn.</p>
+     <p id="studymate-rank-status" class="py-4 text-sm font-semibold text-slate-600" role="status">Đang tải từ Google Sheets…</p>
+     <div class="overflow-x-auto"><table class="w-full text-left text-sm" hidden id="studymate-rank-table">
+     <thead class="bg-indigo-50"><tr><th class="p-3">Hạng</th><th class="p-3">Học sinh</th><th class="p-3">Lớp</th><th class="p-3">Tổng điểm</th><th class="p-3">Thời gian</th></tr></thead><tbody></tbody>
+     </table></div></section>`;
+   document.getElementById('studymate-rank-refresh').onclick = () => window.renderView('leaderboard');
+   const status = document.getElementById('studymate-rank-status');
+   const table = document.getElementById('studymate-rank-table');
+   (async () => {
+     try {
+       const url = new URL(endpoint);
+       url.searchParams.set('action','getLeaderboard');
+       const response = await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(15000)});
+       if (!response.ok) throw new Error();
+       const data = await response.json();
+       if (!status.isConnected) return;
+       if (!data.ok || !Array.isArray(data.rows)) {
+         status.textContent = 'Chưa lấy được bảng điểm chung. Kiểm tra mã Apps Script và phiên bản triển khai.';
+         return;
+       }
+       if (!data.rows.length) {
+         status.textContent = 'Chưa có kết quả hợp lệ trong KET_QUA. Hãy nộp một bài rồi bấm Làm mới.';
+         return;
+       }
+       const body = table.tBodies[0];
+       for (const row of data.rows.slice(0,10)) {
+         const tr = body.insertRow();
+         tr.className='border-b border-slate-100';
+         for (const value of [row.rank,row.displayName,row.className||'—',Number(row.score).toLocaleString('vi-VN'),Math.floor(row.seconds/60)+' phút '+row.seconds%60+' giây']) {
+           const td=tr.insertCell();
+           td.className='p-3';
+           td.textContent=String(value);
+         }
+       }
+       table.hidden=false;
+       status.textContent='Đã cập nhật từ Google Sheets.';
+     } catch {
+       if (status.isConnected) status.textContent='Không kết nối được Google Sheets. Kiểm tra quyền truy cập hoặc thử Làm mới.';
+     }
+   })();
+ };
 })();
 </script>
 </body>
