@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>STUDYMATE - Trạm Trò Chơi KNTT Lớp 9</title>
+    <title>STUDYMATE - Hệ sinh thái học liệu số</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -125,10 +125,6 @@
                 </div>
                 
                 <div class="flex items-center gap-2 md:gap-4 flex-shrink-0">
-                    <button type="button" onclick="renderView('leaderboard')" aria-label="Mở bảng xếp hạng" class="flex items-center justify-center gap-2 bg-violet-100 hover:bg-violet-200 text-violet-800 border border-violet-200 rounded-xl px-3 md:px-4 py-2 font-bold text-xs md:text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-500 no-select">
-                        <i class="ph-fill ph-trophy text-amber-600 text-lg" aria-hidden="true"></i>
-                        <span>Bảng xếp hạng</span>
-                    </button>
                     <div class="flex items-center gap-1 md:gap-2 bg-amber-50 px-3 py-1.5 md:px-4 md:py-2 rounded-lg md:rounded-xl border border-amber-100 shadow-sm transition-transform hover:scale-105 cursor-default no-select">
                         <i class="ph-fill ph-star text-amber-400 text-lg animate-pulse"></i>
                         <span id="global-score" class="font-black text-amber-600">0</span>
@@ -579,13 +575,6 @@
             });
             html += `
 <div class='mt-6 pt-4 border-t border-slate-200'></div>
-<button onclick="renderView('leaderboard')" id="menu-leaderboard" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-[1rem] sidebar-btn font-bold text-slate-500 hover:bg-slate-200/60 group text-left transition-all no-select">
-<div class="icon-box w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center text-xl transition-transform shadow-sm group-hover:scale-110 flex-shrink-0" style="background-color: #fef08a; color: #a16207;">
-<i class="ph-fill ph-trophy text-base md:text-xl"></i>
-</div>
-<span class="text-xs md:text-sm uppercase tracking-wider whitespace-nowrap">Bảng xếp hạng</span>
-</button>
-
 <button onclick="showAuthModal()" id="menu-auth" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-[1rem] sidebar-btn font-bold text-slate-500 hover:bg-slate-200/60 group text-left transition-all no-select mt-2">
 <div class="icon-box w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center text-xl transition-transform shadow-sm group-hover:scale-110 flex-shrink-0" style="background-color: #e2e8f0; color: #475569;">
 <i class="ph-fill ph-user"></i>
@@ -1134,7 +1123,7 @@ async function handleLogin() {
         document.getElementById('auth-text').innerText = currentUser.username;
         closeAuthModal();
         if (currentUser.role === 'teacher') renderView('teacher_dashboard');
-        else renderView('leaderboard');
+        else renderView('home');
         return;
     }
     
@@ -1156,7 +1145,7 @@ async function handleLogin() {
             document.getElementById('auth-text').innerText = currentUser.username;
             closeAuthModal();
             if (currentUser.role === 'teacher') renderView('teacher_dashboard');
-            else renderView('leaderboard');
+            else renderView('home');
         } else {
             err.innerText = data.message || "Sai thông tin đăng nhập";
             err.classList.remove('hidden');
@@ -1805,7 +1794,8 @@ window.__practice9Test={numeric,shortMatch,result,answered,state:p,chapter,quest
  };
  const previousRankView = window.renderView;
  window.renderView = function(view, ...args) {
-   if (view !== 'leaderboard') return previousRankView.call(this, view, ...args);
+   if (view === 'leaderboard') return previousRankView.call(this, 'home', ...args);
+   return previousRankView.call(this, view, ...args);
    currentView = view;
    document.getElementById('view-title').textContent = 'Bảng Vinh Danh';
    const main = document.getElementById('main-content');
